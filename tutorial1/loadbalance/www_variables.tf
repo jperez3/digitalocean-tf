@@ -5,7 +5,7 @@ variable "droplet_image" {
 
 variable "droplet_name" {
     description = "droplet name"
-    default     = "www-1"
+    default     = "www"
 }
 
 variable "droplet_size" {

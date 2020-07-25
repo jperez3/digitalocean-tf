@@ -1,7 +1,7 @@
 resource "digitalocean_droplet" "www-2" {
     image = "ubuntu-20-04-x64"
     name = "www-2"
-    region = "SFO2"
+    region = "sfo2"
     size = "s-1vcpu-1gb"
     private_networking = true
     ssh_keys = [

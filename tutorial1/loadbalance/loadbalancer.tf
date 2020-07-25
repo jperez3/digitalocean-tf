@@ -1,18 +1,18 @@
 resource "digitalocean_loadbalancer" "www-lb" {
-  name = "web-lb"
-  region = "sfo2" # SFO2 (all caps) works in droplet creation, but not here 
+  name = "${var.droplet_name}-lb"
+  region = var.region
 
   forwarding_rule {
-    entry_port = 80
-    entry_protocol = "http"
+    entry_port = var.lb_entry_port
+    entry_protocol = var.lb_entry_protocol
 
-    target_port = 80
-    target_protocol = "http"
+    target_port = var.lb_target_port
+    target_protocol = var.lb_target_protocol
   }
 
   healthcheck {
-    port = 22
-    protocol = "tcp"
+    port = var.lb_health_check_port
+    protocol = var.lb_health_check_protocol
   }
 
   droplet_ids = [digitalocean_droplet.www-1.id, digitalocean_droplet.www-2.id ]

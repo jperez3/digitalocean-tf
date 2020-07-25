@@ -1,19 +1,19 @@
 resource "digitalocean_droplet" "www-2" {
-    image = "ubuntu-20-04-x64"
-    name = "www-2"
-    region = "SFO2"
-    size = "s-1vcpu-1gb"
-    private_networking = true
+    image = var.droplet_image
+    name = "${var.droplet_name}-2"
+    region = var.region
+    size = var.droplet_size
+    private_networking = var.droplet_private_network
     ssh_keys = [
       var.ssh_fingerprint
     ]
   connection {
 
     host = self.ipv4_address
-    user = "root"
-    type = "ssh"
+    user = var.droplet_user
+    type = var.droplet_type
     private_key = file(var.pvt_key)
-    timeout = "2m"
+    timeout = var.droplet_timeout
   }
   provisioner "remote-exec" {
     inline = [
