@@ -34,7 +34,7 @@ Save and exit
 
 3. In your terminal run `source ~/.bash_profile`, then make sure the variables have loaded by printing them, eg `echo $TF_VAR_pub_key`
 
-4. Now in the `loadbalance` folder run `terraform init && terraform plan` to run them in succession 
+4. Now in the `loadbalance` folder run `terraform init && terraform plan` to run them in succession
     - Now you should be able to run terraform commands without the extra `-var` flags
 
 
@@ -120,3 +120,4 @@ www-lb-ip = 121.122.123.124
     - Created an output to retrieve the load balancer IP so that you can check the nginx functionality without having to lookup the IP in the DigitalOcean console
 
 * Remember to run `terraform destroy` at the end to deprovision the resources 
+5. Create a variable for each parameter in the `digitalocean_droplet` resource definition
