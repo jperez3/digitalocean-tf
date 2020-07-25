@@ -12,6 +12,6 @@ variable "ssh_fingerprint" {
 }
 
 variable "region" {
-    description = "DigitalOcean region"
-    default     = "sfo2"
+  description = "DigitalOcean region"
+  default     = "sfo2"
 }
