@@ -1,22 +1,26 @@
-name: Terraform Apply
+name: 'Terraform'
 
-on: [push]
+on:
+  push:
+    branches:
+    - master
+  pull_request:
 
 jobs:
-  terraform_apply:
+  terraform:
+    name: 'Terraform'
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v1
+    - name: Checkout
+      uses: actions/checkout@v2
 
-    - name: Install Terraform
-      env:
-        TERRAFORM_VERSION: "0.12.24"
-      run: |
-        tf_version=$TERRAFORM_VERSION
-        wget https://releases.hashicorp.com/terraform/"$tf_version"/terraform_"$tf_version"_linux_amd64.zip
-        unzip terraform_"$tf_version"_linux_amd64.zip
-        sudo mv terraform /usr/local/bin/
-    - name: Verify Terraform version
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v1
+      with:
+        cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
+
+    - name: Terraform format check
+      run: terraform fmt -check
+      
+    - name: Terraform version check
       run: terraform --version
-    - name: Validate Terraform files
-      run: terraform validate tutorial1/loadbalance      
