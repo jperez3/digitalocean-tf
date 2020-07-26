@@ -63,3 +63,15 @@ resource "digitalocean_loadbalancer" "www-lb" {
   droplet_ids = digitalocean_droplet.www.*.id
 }
 ```
+
+
+
+#### update remote backend 
+
+* Create a [Terraform Cloud](app.terraform.io) account
+* Create an organization
+* Create a workspace
+* Set the workspace to local runs only
+* Create api key
+* Configure api key on local machine 
+* Create `backend` settings in `provider.tf` file 

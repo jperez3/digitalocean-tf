@@ -5,7 +5,7 @@ on:
     branches:
     - master
     # paths:
-    # - tutorial2/loadbalance
+    # - tutorial3/loadbalance
   pull_request:
 
 jobs:
@@ -22,7 +22,7 @@ jobs:
         cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
 
     - name: Terraform format check
-      run: terraform fmt -check tutorial2/loadbalance/
+      run: terraform fmt -check tutorial3/loadbalance/
       
     - name: Terraform version check
       run: terraform --version
@@ -30,10 +30,11 @@ jobs:
     - name: Terraform init
       env:
         TF_VAR_do_token: ${{ secrets.DO_TOKEN_RO }}
-      run: terraform init tutorial2/loadbalance/
+      run: terraform init tutorial3/loadbalance/
       
-    # - name: Terraform plan
-    #   env:
-    #     TF_VAR_do_token: ${{ secrets.DO_TOKEN_RO }}
-    #   run: terraform plan tutorial2/loadbalance/
+    - name: Terraform plan
+      env:
+        TF_VAR_do_token: ${{ secrets.DO_TOKEN_RO }}
+        TF_VAR_ssh_fingerprint: ${{ secrets.SSH_FINGERPRINT }}
+      run: terraform plan tutorial3/loadbalance/
 
