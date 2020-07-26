@@ -5,7 +5,7 @@ on:
     branches:
     - master
     paths:
-    - tutorial2/**
+    - tutorial2/loadbalance
   pull_request:
 
 jobs:
