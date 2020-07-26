@@ -32,7 +32,8 @@ jobs:
         TF_VAR_do_token: ${{ secrets.DO_TOKEN_RO }}
       run: terraform init tutorial2/loadbalance/
       
-    - name: Terraform plan
-      env:
-        TF_VAR_do_token: ${{ secrets.DO_TOKEN_RO }}
-      run: terraform plan tutorial2/loadbalance/
+    # - name: Terraform plan
+    #   env:
+    #     TF_VAR_do_token: ${{ secrets.DO_TOKEN_RO }}
+    #   run: terraform plan tutorial2/loadbalance/
+
