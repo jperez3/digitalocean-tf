@@ -75,3 +75,4 @@ resource "digitalocean_loadbalancer" "www-lb" {
 * Create api key
 * Configure api key on local machine 
 * Create `backend` settings in `provider.tf` file 
+* Use count for multiple `www` resources
