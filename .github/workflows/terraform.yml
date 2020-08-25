@@ -4,8 +4,8 @@ on:
   push:
     branches:
     - master
-    # paths:
-    # - tutorial3/loadbalance
+     paths:
+     - tutorial5/app
   pull_request:
 
 jobs:
