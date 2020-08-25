@@ -27,3 +27,35 @@ variable "lb_health_check_protocol" {
   description = "load balancer health check protocol"
   default     = "tcp"
 }
+
+#################
+# DNS Variables #
+#################
+
+variable "domain" {
+  description = "your custom domain name"
+  default     = "taccoform.com"
+}
+
+variable "subdomain" {
+  description = "subdomain for certificate and dns"
+  default     = "www"
+}
+
+variable "dns_record_type" {
+  description = "DNS record type for web"
+  default     = "A"
+}
+
+data "digitalocean_domain" "default" {
+  name = var.domain
+}
+
+#########################
+# Certificate Variables #
+#########################
+
+variable "cert_type" {
+  description = "the type of certificate to provision"
+  default     = "lets_encrypt"
+}

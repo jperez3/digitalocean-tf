@@ -20,15 +20,19 @@ resource "digitalocean_loadbalancer" "www-lb" {
   droplet_ids = digitalocean_droplet.www.*.id
 }
 
+#####################
+# DNS + Certificate #
+#####################
+
 resource "digitalocean_record" "www" {
   domain = data.digitalocean_domain.default.name
-  type   = "A"
-  name   = "www"
+  type   = var.dns_record_type
+  name   = var.subdomain
   value  = digitalocean_loadbalancer.www-lb.ip
 }
 
 resource "digitalocean_certificate" "www" {
-  name    = "wildcard"
-  type    = "lets_encrypt"
-  domains = ["www.${var.domain}"]
+  name    = var.subdomain
+  type    = var.cert_type
+  domains = ["${var.subdomain}.${var.domain}"]
 }

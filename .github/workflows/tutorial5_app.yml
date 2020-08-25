@@ -5,7 +5,7 @@ on:
     branches:
     - master
     paths:
-     - tutorial3/loadbalance/**/*.tf
+     - tutorial5/app/*.tf
   pull_request:
 
 jobs:
@@ -13,6 +13,8 @@ jobs:
     name: 'Terraform'
     runs-on: ubuntu-latest
     steps:
+    - name: Set path
+      run: echo '::set-env name=TF_PATH::tutorial5/app'      
     - name: Checkout
       uses: actions/checkout@v2
 
@@ -22,7 +24,7 @@ jobs:
         cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
 
     - name: Terraform format check
-      run: terraform fmt -check tutorial3/loadbalance/
+      run: terraform fmt -check $TF_PATH
       
     - name: Terraform version check
       run: terraform --version
@@ -30,11 +32,11 @@ jobs:
     - name: Terraform init
       env:
         TF_VAR_do_token: ${{ secrets.DO_TOKEN_RO }}
-      run: terraform init tutorial3/loadbalance/
+      run: terraform init $TF_PATH
       
     - name: Terraform plan
       env:
         TF_VAR_do_token: ${{ secrets.DO_TOKEN_RO }}
         TF_VAR_ssh_fingerprint: ${{ secrets.SSH_FINGERPRINT }}
-      run: terraform plan tutorial3/loadbalance/
+      run: terraform plan $TF_PATH
 
