@@ -13,7 +13,7 @@ jobs:
     name: 'Terraform'
     runs-on: ubuntu-latest
     steps:
-    - name: Set path
+    - name: Set Terraform path
       run: echo '::set-env name=TF_PATH::tutorial5/app'      
     - name: Checkout
       uses: actions/checkout@v2
