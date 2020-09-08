@@ -1,3 +1,5 @@
+# Tutorial 5
+
 ### DNS
 * Purchase a domain
 * Create NS records for domain and point them to ns{1-3}.digitalocean.com
@@ -13,3 +15,10 @@
 * Update port and protocol on load balancer (https/443)
 * Create `www` certificate 
 * Add `www` certificate to load balancer
+
+
+
+
+#### doctl
+
+* get droplet names: `doctl compute droplet list --output json | jq '.[].name'`
