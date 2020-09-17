@@ -3,7 +3,7 @@ resource "digitalocean_loadbalancer" "www-lb" {
   region = "sfo2" # SFO2 (all caps) works in droplet creation, but not here 
 
   forwarding_rule {
-    entry_port = 80
+    entry_port = 80  
     entry_protocol = "http"
 
     target_port = 80

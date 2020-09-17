@@ -20,10 +20,20 @@ variable "lb_target_protocol" {
 
 variable "lb_health_check_port" {
   description = "load balancer health check port"
-  default     = 22
+  default     = 80
 }
 
 variable "lb_health_check_protocol" {
   description = "load balancer health check protocol"
-  default     = "tcp"
+  default     = "http"
+}
+
+variable "lb_health_check_interval_seconds" {
+  description = "load balancer health check interval seconds"
+  default     = 5
+}
+
+variable "lb_health_check_path" {
+  description = "load balancer health check path"
+  default     = "/"
 }

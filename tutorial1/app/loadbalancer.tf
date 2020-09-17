@@ -11,8 +11,10 @@ resource "digitalocean_loadbalancer" "www-lb" {
   }
 
   healthcheck {
-    port     = var.lb_health_check_port
-    protocol = var.lb_health_check_protocol
+    check_interval_seconds = var.lb_health_check_interval_seconds
+    path                   = var.lb_health_check_path    
+    port                   = var.lb_health_check_port
+    protocol               = var.lb_health_check_protocol
   }
 
   droplet_ids = [digitalocean_droplet.www-1.id, digitalocean_droplet.www-2.id]

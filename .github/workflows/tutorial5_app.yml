@@ -1,4 +1,4 @@
-name: 'Terraform'
+name: 'Tutorial5_app'
 
 on:
   push:
