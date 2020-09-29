@@ -1,18 +1,5 @@
 
-# This is what tells terraform where to find the statefile
-terraform {
-  backend "remote" {
-    hostname     = "app.terraform.io"
-    organization = "ordisius"
-
-    workspaces {
-      name = "digital-ocean-tutorial"
-    }
-  }
-}
-
-
-# This tells terraform which APIs to expect to interaface with, which version to use and
+# This tells terraform which cloud provider (or other hosted service) to expect to interaface with, which version to use and
 # which version of terraform is required
 terraform {
   required_providers {
