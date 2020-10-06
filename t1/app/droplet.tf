@@ -1,5 +1,5 @@
 data "digitalocean_ssh_key" "root" {
-  name = "joe-win1"
+  name = "taccoform-tutorial"
 }
 
 resource "digitalocean_droplet" "web" {
@@ -10,9 +10,6 @@ resource "digitalocean_droplet" "web" {
   ssh_keys  = [data.digitalocean_ssh_key.root.id]
   user_data = templatefile("templates/user_data_nginx.yaml", { hostname = "web-burrito-prod" })
 
-  lifecycle {
-    create_before_destroy = true
-  }
 }
 
 output "droplet_public_ip" {
