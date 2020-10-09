@@ -105,40 +105,31 @@ Components:
 
 #### Install Terraform
 
+**Mac OS**
+
+* Open terminal
+* Install Brew: `/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"`
+* Install Hashicorp tap: `brew tap hashicorp/tap`
+* Install Terraform: `brew install terraform`
+
+**Windows**
+
+* Open terminal app
+* Install Chocolatey: `Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))`
+* Install Terraform: `choco install terraform`
+
 #### Terraform Commands
+
+* `terraform init` - This initializes terraform (duh) which means it pulls in the provider information, downloads any modules that are referenced in the code and set up the terraform statefile 
+
+* `terraform plan` - This is a dry-run feature of terraform to see what would happen if you executed the provisioning based on what's in the code and in your terraform statefile 
+
+* `terraform apply` - This executes the provisioning or destruction of resources based on what is in your code and the terraform statefile 
+
+* `terraform destroy` - This is a pretty well named subcommand. It will destroy everything listed in your terraform statefile 
 
 
 #### Run Terraform
 
 
 
-#### Save for later
-
-```hcl
-
-resource "digitalocean_firewall" "ingress-allow-web" {
-  name = "ingress-allow-web"
-
-  droplet_ids = digitalocean_droplet.web.*.id
-
-  inbound_rule {
-    protocol         = var.ingress_web_protocol
-    port_range       = var.ingress_web_port
-    source_addresses = var.internet_cidr_list
-  }
-
-}
-```
-
-```hcl
-# This is what tells terraform where to find the statefile
- terraform {
-   backend "remote" {
-     hostname     = "app.terraform.io"
-     organization = "ordisius"
-     workspaces {
-       name = "digital-ocean-tutorial"
-     }
-   }
- }
-```
