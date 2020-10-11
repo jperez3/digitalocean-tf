@@ -73,7 +73,7 @@ data "digitalocean_ssh_key" "root" {
 Components:
 * `data` tells terraform that the following resource is a lookup
 * `digitalocean_ssh_key` is a unique name created by the DigitalOcean provider which allows you to pull in SSH keys
-* `root` is a static name give by you and can be anything, but it's better when it's more specific 
+* `root` is a static name give by you and can be anything, but it's better when it's more specific. In this case, we're referencing the droplet's "root" account.  
 * `name` is a parameter which is allowed by the `digitalocean_ssh_key` data resource. More information on this data resource can be found [here](https://registry.terraform.io/providers/digitalocean/digitalocean/latest/docs/data-sources/ssh_key)
 
 
@@ -118,18 +118,237 @@ Components:
 * Install Chocolatey: `Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))`
 * Install Terraform: `choco install terraform`
 
+
+* Verify terraform has been installed by running `terraform version`
+  - Sample output:
+
+```hcl
+Terraform v0.13.1
++ provider registry.terraform.io/digitalocean/digitalocean v1.22.2
+```
+_Note: you should be running Terraform 0.13.x_
+
 #### Terraform Commands
 
-* `terraform init` - This initializes terraform (duh) which means it pulls in the provider information, downloads any modules that are referenced in the code and set up the terraform statefile 
+* `terraform init` - This initializes terraform (duh) which means it pulls in the provider information, downloads any modules that are referenced in the code and configures the terraform statefile 
 
 * `terraform plan` - This is a dry-run feature of terraform to see what would happen if you executed the provisioning based on what's in the code and in your terraform statefile 
 
 * `terraform apply` - This executes the provisioning or destruction of resources based on what is in your code and the terraform statefile 
 
-* `terraform destroy` - This is a pretty well named subcommand. It will destroy everything listed in your terraform statefile 
+* `terraform destroy` - This is a pretty well named subcommand. It will destroy everything you've provisioned 
 
 
 #### Run Terraform
 
+* Run `terraform init`
+  - Your output should look like the sample below:
+
+```hcl
+  Initializing the backend...
+
+Initializing provider plugins...
+- Using previously-installed digitalocean/digitalocean v1.22.2
+
+Terraform has been successfully initialized!
+
+You may now begin working with Terraform. Try running "terraform plan" to see
+any changes that are required for your infrastructure. All Terraform commands
+should now work.
+
+If you ever set or change modules or backend configuration for Terraform,
+rerun this command to reinitialize your working directory. If you forget, other
+commands will detect it and remind you to do so if necessary.
+```
+
+* Now run `terraform plan`
+  - Sample output below: 
+
+```hcl
+Refreshing Terraform state in-memory prior to plan...
+The refreshed state will be used to calculate this plan, but will not be
+persisted to local or remote state storage.
+
+data.digitalocean_ssh_key.root: Refreshing state...
+
+------------------------------------------------------------------------
+
+An execution plan has been generated and is shown below.
+Resource actions are indicated with the following symbols:
+  + create
+
+Terraform will perform the following actions:
+
+  # digitalocean_droplet.web will be created
+  + resource "digitalocean_droplet" "web" {
+      + backups              = false
+      + created_at           = (known after apply)
+      + disk                 = (known after apply)
+      + id                   = (known after apply)
+      + image                = "ubuntu-20-04-x64"
+      + ipv4_address         = (known after apply)
+      + ipv4_address_private = (known after apply)
+      + ipv6                 = false
+      + ipv6_address         = (known after apply)
+      + ipv6_address_private = (known after apply)
+      + locked               = (known after apply)
+      + memory               = (known after apply)
+      + monitoring           = false
+      + name                 = "web-burrito-prod"
+      + price_hourly         = (known after apply)
+      + price_monthly        = (known after apply)
+      + private_networking   = (known after apply)
+      + region               = "sfo2"
+      + resize_disk          = true
+      + size                 = "s-1vcpu-1gb"
+      + ssh_keys             = [
+          + "28662501",
+        ]
+      + status               = (known after apply)
+      + urn                  = (known after apply)
+      + user_data            = "6ea4456823de5c1b3b50b4e3d151c442d5231234"
+      + vcpus                = (known after apply)
+      + volume_ids           = (known after apply)
+      + vpc_uuid             = (known after apply)
+    }
+
+Plan: 1 to add, 0 to change, 0 to destroy.
+
+Changes to Outputs:
+  + droplet_public_ip = (known after apply)
+```
+  - You can how see what terraform will be provisoining
+  - The `Plan` line is key for deciding if terraform is going to perform the changes you're expecting.
+  - It's always a good idea to review the plan prior to executing the change
+
+* After reviewing the plan's output, run `terraform apply`
+  - You will see a similar output to the plan and will prompted to confirm the change:
+
+```hcl
+Plan: 1 to add, 0 to change, 0 to destroy.
+
+Changes to Outputs:
+  + droplet_public_ip = (known after apply)
+
+Do you want to perform these actions?
+  Terraform will perform the actions described above.
+  Only 'yes' will be accepted to approve.
+
+  Enter a value: 
+```
+
+* If it all looks good, confirm by entering `yes` and pressing enter
+  - Sample output below
+
+```
+  Enter a value: yes
+
+digitalocean_droplet.web: Creating...
+digitalocean_droplet.web: Still creating... [10s elapsed]
+digitalocean_droplet.web: Still creating... [20s elapsed]
+digitalocean_droplet.web: Still creating... [30s elapsed]
+digitalocean_droplet.web: Creation complete after 35s [id=211687049]
+
+Apply complete! Resources: 1 added, 0 changed, 0 destroyed.
+
+Outputs:
+
+droplet_public_ip = 1.2.3.4
+```
+
+* After the `apply` has completed, you can take the `droplet_public_ip` and browse to it (eg. http://1.2.3.4)
+* Even though the terraform process has completed, DigitalOcean is still provisioning the droplet with the help of the `user_data_nginx.yaml` we specified in the resource definition
+* After a minute of furiously refreshing the page, you should see the default nginx page. After another ~30 seconds, refresh the page. The user data script should have completed and you should now see _"web-burrito-prod IS ALIVE!!!"_
+
+* Now you can ssh into the new droplet with `ssh -i ~/.ssh/do_ed25519 root@1.2.3.4` (replace 1.2.3.4 with your `droplet_public_ip`)
+  - You will be prompted to continue connecting, type `yes` then press enter
+  - Now you'll be prompted for the passphare you created for the `do_ed25519` key
+  - After submitting the passphrase, you should see the prompt: `root@web-burrito-prod:~#`
+  - You can review the output of the `user_data` script by running `cat /var/log/cloud-init-output.log`
+  - Once you're done, run `exit` 
+
+#### Destroying the droplet
+
+After you've shown a loved one and they say "that's very nice, but I'm busy right now", it's time to destroy the droplet.
+
+* Run `terraform destroy`
+  - You should see something similar to the output below:
+
+```hcl
+An execution plan has been generated and is shown below.
+Resource actions are indicated with the following symbols:
+  - destroy
+
+Terraform will perform the following actions:
+
+  # digitalocean_droplet.web will be destroyed
+  - resource "digitalocean_droplet" "web" {
+      - backups              = false -> null
+      - created_at           = "2020-10-11T18:49:21Z" -> null
+      - disk                 = 25 -> null
+      - id                   = "211687049" -> null
+      - image                = "ubuntu-20-04-x64" -> null
+      - ipv4_address         = "1.2.3.4" -> null
+      - ipv4_address_private = "10.10.0.2" -> null
+      - ipv6                 = false -> null
+      - locked               = false -> null
+      - memory               = 1024 -> null
+      - monitoring           = false -> null
+      - name                 = "web-burrito-prod" -> null
+      - price_hourly         = 0.00744 -> null
+      - price_monthly        = 5 -> null
+      - private_networking   = true -> null
+      - region               = "sfo2" -> null
+      - resize_disk          = true -> null
+      - size                 = "s-1vcpu-1gb" -> null
+      - ssh_keys             = [
+          - "28662501",
+        ] -> null
+      - status               = "active" -> null
+      - tags                 = [] -> null
+      - urn                  = "do:droplet:123456789" -> null
+      - user_data            = "6ea4456823de5c1b3b50b4e3d151c442d1234567" -> null
+      - vcpus                = 1 -> null
+      - volume_ids           = [] -> null
+      - vpc_uuid             = "f7eaa123-e123-4123-a123-a7cf99e08123" -> null
+    }
+
+Plan: 0 to add, 0 to change, 1 to destroy.
+
+Changes to Outputs:
+  - droplet_public_ip = "1.2.3.4" -> null
+
+Do you really want to destroy all resources?
+  Terraform will destroy all your managed infrastructure, as shown above.
+  There is no undo. Only 'yes' will be accepted to confirm.
+
+  Enter a value: 
+```
+* The output shows you what will be destroyed. We're expecting to destroy 1 droplet resource and that's what it is telling us. 
+* Type `yes` and press enter to start the destruction 
+  - Your output should be similar to the output below:
+
+```hcl
+  Enter a value: yes
+
+digitalocean_droplet.web: Destroying... [id=123456789]
+digitalocean_droplet.web: Still destroying... [id=123456789, 10s elapsed]
+digitalocean_droplet.web: Still destroying... [id=123456789, 20s elapsed]
+digitalocean_droplet.web: Destruction complete after 23s
+
+Destroy complete! Resources: 1 destroyed.
+```
 
 
+### In Review
+
+* You set up your DigitalOcean account
+* Configured a droplet SSH key
+* Learned about `.tf` files
+* Created your first resource definition 
+* Installed Terraform
+* Learned about Terraform init/plan/apply
+* Provisioned via the terraform command
+* SSH'd into the newly provisioned droplet
+* Destroyed the droplet
+  
