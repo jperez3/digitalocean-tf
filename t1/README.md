@@ -262,7 +262,7 @@ droplet_public_ip = 1.2.3.4
 
 * Now you can ssh into the new droplet with `ssh -i ~/.ssh/do_ed25519 root@1.2.3.4` (replace 1.2.3.4 with your `droplet_public_ip`)
   - You will be prompted to continue connecting, type `yes` then press enter
-  - Now you'll be prompted for the passphare you created for the `do_ed25519` key
+  - Now you'll be prompted for the passphrase you created for the `do_ed25519` key
   - After submitting the passphrase, you should see the prompt: `root@web-burrito-prod:~#`
   - You can review the output of the `user_data` script by running `cat /var/log/cloud-init-output.log`
   - Once you're done, run `exit` 
