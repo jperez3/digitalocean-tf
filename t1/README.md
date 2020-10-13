@@ -1,7 +1,7 @@
 
 # Lesson 1
 
-You've reviewed [CNCF Landscape](https://landscape.cncf.io/) and decide that you need to start somewhere. You close your eyes and randomly click one of the logos. You open your eyes and see a weird `T` logo with the name "Hashicorp Terraform." This is how I got started with Terraform. After 4 years of mostly learning what not to do, I decided to help others on their cloud journey. If you know how to use github and a little bit of bash, I will teach you how to provision servers in the cloud with Infrastructure as Code. We're going to be working with DigitalOcean, but the principles learned here can be used across all cloud providers. This is the first entry in the Taccoform Learning Series. 
+You've reviewed the [CNCF Landscape](https://landscape.cncf.io/) and have decided that you need to start somewhere. You close your eyes and randomly click one of the logos. You open your eyes and see a weird `T` logo with the name "Hashicorp Terraform." This is how I got started with Terraform. After 4 years of mostly learning what not to do, I decided to help others on their cloud journey. If you know how to use github and a little bit of bash, I will teach you how to provision servers in the cloud with Infrastructure as Code. We're going to be working with DigitalOcean, but the principles learned here can be used across all cloud providers. This is the first entry in the Taccoform Learning Series. 
 
 
 ### Overview
@@ -282,6 +282,8 @@ droplet_public_ip = 1.2.3.4
   - You can review the output of the `user_data` script by running `cat /var/log/cloud-init-output.log`
   - Once you're done, run `exit` 
 
+* You can also log into the [DigitalOcean](https://cloud.digitalocean.com/login) control panel to check out your droplet
+
 #### Destroying the droplet
 
 After you've shown a loved one and they say "that's very nice, but I'm busy right now", it's time to destroy the droplet.
@@ -353,6 +355,8 @@ digitalocean_droplet.web: Destruction complete after 23s
 
 Destroy complete! Resources: 1 destroyed.
 ```
+
+After the `terraform destroy` has finished, don't forget to commit your changes to github.
 
 
 ### In Review
