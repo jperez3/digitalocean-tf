@@ -1,6 +1,14 @@
 
 # Lesson 1
 
+You've reviewed [CNCF Landscape](https://landscape.cncf.io/) and decide that you need to start somewhere. You close your eyes and randomly click one of the logos. You open your eyes and see a weird `T` logo with the name "Hashicorp Terraform." This is how I got started with Terraform. After 4 years of mostly learning what not to do, I decided to help others on their cloud journey. If you know how to use github and a little bit of bash, I will teach you how to provision servers in the cloud with Infrastructure as Code. We're going to be working with DigitalOcean, but the principles learned here can be used across all cloud providers. This is the first entry in the Taccoform Learning Series. 
+
+
+### Overview
+
+Alright, first we need to do a bit of setup. We need to create a DigitalOcean account, configure an SSH key, and fork a repo. After that we can start talking about terraform, build something, and destroy it when we're done. 
+
+
 ### Pre-Flight
 
 #### Create a DigitalOcean Account
@@ -23,7 +31,8 @@
 
 
 #### Fork and clone the Taccoform Tutorial repo
-1. Go to the [Taccoform Tutorial Repo](https://github.com/jperez3/taccoform-tutorial), fork the repo and clone it.
+1. Go to the [Taccoform Tutorial Repo](https://github.com/jperez3/taccoform-tutorial), fork the repo and clone it to your computer.
+2. Open the repo with your favorite IDE. If you don't have one, I'd suggest taking a look at Microsoft's VSCode. It's a pretty nice product and free. 
 
 
 ### Terraform Files
@@ -35,7 +44,9 @@ Terraform file basics:
 
 #### Create a Secrets file
 
-1. Navigate to `tutorial-1`
+You don't want to post your digital personal access token on github, so I've added `secrets.tf` to the `.gitignore` file. If you're working out of your own repo, please add `secrets.tf` to your `.gitignore` file.
+
+1. Navigate to `t1`
 1. Create a new file called `secrets.tf`
 2. In the `secrets.tf` file, create a new terraform variable for your DigitalOcean key:
 
@@ -70,6 +81,8 @@ data "digitalocean_ssh_key" "root" {
   name = "taccoform-tutorial"
 }
 ```
+_Note: don't copy/paste the code above. Write it on your own to get a feel for writing Terraform_
+
 Components:
 * `data` tells terraform that the following resource is a lookup
 * `digitalocean_ssh_key` is a unique name created by the DigitalOcean provider which allows you to pull in SSH keys
@@ -90,6 +103,8 @@ resource "digitalocean_droplet" "web" {
   user_data = templatefile("templates/user_data_nginx.yaml", { hostname = "web-burrito-prod" })
 }
 ```
+_Note: don't copy/paste the code above. Write it on your own to get a feel for writing Terraform_
+
 Components:
 * `resource` tells terraform that the following definition is something that needs to be created
 * `digitalocean_droplet` is a unique name created by the DigitalOcean provider which creates a droplet
@@ -97,8 +112,8 @@ Components:
 * `image` is a DigitalOcean supported operating system (required)
 * `name` is a unique name provided by you. I prefer to use the format `NodeType-ServiceName-Environment` (required)
 * `region` is a unique location provided by DigitalOcean (required)
-* `size` is a unique code provided by DigitalOcean to tell terraform how big of a droplet needs to be provisioned. The size defined is the smallest server offering by DigitalOcean and is $5/month. We're destroy these after the tutorial, so your bill will be less than that. (required)
-* `user_data` is the set of instructions on what to do after the operating system has been installed. Of note here is that we're using the template function to call the file from the templates folder and pass through the `hostname` variable.
+* `size` is a unique code provided by DigitalOcean to tell terraform how big of a droplet needs to be provisioned. The size defined is the smallest server offering by DigitalOcean and is $5/month. We're going to destroy the droplet at the end of the tutorial, so your bill will be less than that. (required)
+* `user_data` is the set of instructions on what to do after the operating system has been installed. Of note here is that we're using the template function to call the file from the `templates` folder and pass through the `hostname` variable.
 
 
 ### Terraform Installation and Commands
