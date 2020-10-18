@@ -1,18 +1,22 @@
-
+<!--- Personally I think this header should be Overview-->
 # Lesson 1
 
-You've reviewed the [CNCF Landscape](https://landscape.cncf.io/) and have decided that you need to start somewhere. You close your eyes and randomly click one of the logos. You open your eyes and see a weird `T` logo with the name "Hashicorp Terraform." This is how I got started with Terraform. After 4 years of mostly learning what not to do, I decided to help others on their cloud journey. If you know how to use github and a little bit of bash, I will teach you how to provision servers in the cloud with Infrastructure as Code. We're going to be working with DigitalOcean, but the principles learned here can be used across all cloud providers. This is the first entry in the Taccoform Learning Series. 
+You've reviewed the [CNCF Landscape](https://landscape.cncf.io/) and have decided that you need to start somewhere. You close your eyes and randomly click one of the logos. You open your eyes and see a weird `T` logo with the name "Hashicorp Terraform." This is how I got started with Terraform. 
+
+After 4 years of mostly learning what not to do, I decided to help others on their cloud journey. If you know how to use github and a little bit of bash, I will teach you how to provision servers in the cloud with Infrastructure as code. We're going to be working with DigitalOcean, but the principles learned here can be used across all cloud providers. This is the first entry in the Taccoform Learning Series. 
 
 
-### Overview
+<!--- Personally I think this header should be Lesson 1-->
+### Overview 
 
+<!--- replace "we" with "you" - it empowers the reader -->
 Alright, first we need to do a bit of setup. We need to create a DigitalOcean account, configure an SSH key, and fork a repo. After that we can start talking about terraform, build something, and destroy it when we're done. 
 
 
 ### Pre-Flight
 
 #### Create a DigitalOcean Account
-
+<!-- Instead of bullets do an ordered list instead. Why? Because these are steps -->
 * Create a DigitalOcean account [DigitalOcean Free Credit Referral Link](https://m.do.co/c/d26a4fc22a12)
 * Create a _Personal Access Token_ (DigitalOcean Control Panel: Left pane>Account>API>Personal access tokens>Generate New Token)
   - Give token Read and Write access
@@ -62,7 +66,7 @@ _Note: Replace the default value with your DigitalOcean personal access token_
 
 #### Provider file
 
-The instructions in the `provider.tf` file is a heads up of sorts which tells terraform "Wake up! Expect to communicate with these cloud providers!" As you can see, there are some pre-configured settings on how to connect to DigitalOcean
+The instructions in the `provider.tf` file is a heads up of sorts which tells Terraform "Wake up! Expect to communicate with these cloud providers!" As you can see, there are some pre-configured settings on how to connect to DigitalOcean
 
 #### User Data template
 
@@ -74,7 +78,7 @@ In the templates folder you will find a user data file. This file is passed to t
 As you can see, the `droplet.tf` file is empty right now, you will now start to write your first bit of terraform.
 
 
-In the pre-flight, you created an SSH key and uploaded it to DigitalOcean. If you want to load that SSH key onto a new droplet, you will need to perform a lookup on DigitalOcean to find that key. In terraform land this is known as a "data resource." Below you will see the data resource lookup which is needed prior to creating the droplet. Add this definition to your `droplet.tf` file
+In the pre-flight, you created an SSH key and uploaded it to DigitalOcean. If you want to load that SSH key onto a new droplet, you will need to perform a lookup on DigitalOcean to find that key. In Terraform-land this is known as a "data resource." Below you will see the data resource lookup which is needed prior to creating the droplet. Add this definition to your `droplet.tf` file
 
 ```hcl
 data "digitalocean_ssh_key" "root" { 
@@ -83,6 +87,7 @@ data "digitalocean_ssh_key" "root" {
 ```
 _Note: don't copy/paste the code above. Write it on your own to get a feel for writing Terraform_
 
+<!-- Minor suggestion: this might look better as a table -->
 Components:
 * `data` tells terraform that the following resource is a lookup
 * `digitalocean_ssh_key` is a unique name created by the DigitalOcean provider which allows you to pull in SSH keys
@@ -90,8 +95,9 @@ Components:
 * `name` is a parameter which is allowed by the `digitalocean_ssh_key` data resource. More information on this data resource can be found [here](https://registry.terraform.io/providers/digitalocean/digitalocean/latest/docs/data-sources/ssh_key)
 
 
-Now it's time to actually create the droplet. you will do this by creating a droplet resource definition.
+Now it's time to actually create the droplet. You will do this by creating a droplet resource definition.
 
+_Note: don't copy/paste the code below. Write it on your own to get a feel for writing Terraform_
 
 ```hcl
 resource "digitalocean_droplet" "web" {
@@ -103,12 +109,12 @@ resource "digitalocean_droplet" "web" {
   user_data = templatefile("templates/user_data_nginx.yaml", { hostname = "web-burrito-prod" })
 }
 ```
-_Note: don't copy/paste the code above. Write it on your own to get a feel for writing Terraform_
 
+<!-- Minor suggestion: this might look better as a table -->
 Components:
 * `resource` tells terraform that the following definition is something that needs to be created
 * `digitalocean_droplet` is a unique name created by the DigitalOcean provider which creates a droplet
-* `web` is a static name given by you and can be anything, but it's btter when it's more specific
+* `web` is a static name given by you and can be anything, but it's better when it's more specific
 * `image` is a DigitalOcean supported operating system (required)
 * `name` is a unique name provided by you. I prefer to use the format `NodeType-ServiceName-Environment` (required)
 * `region` is a unique location provided by DigitalOcean (required)
@@ -121,19 +127,19 @@ Components:
 #### Install Terraform
 
 **Mac OS**
-
+<!-- Since these are steps, change the bullets into numbers -->
 * Open terminal
 * Install Brew: `/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"`
 * Install Hashicorp tap: `brew tap hashicorp/tap`
 * Install Terraform: `brew install terraform`
 
 **Windows**
-
+<!-- Since these are steps, change the bullets into numbers -->
 * Open terminal app
 * Install Chocolatey: `Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))`
 * Install Terraform: `choco install terraform`
 
-
+<!-- Extra space? -->
 * Verify terraform has been installed by running `terraform version`
   - Sample output:
 
@@ -144,7 +150,7 @@ Terraform v0.13.1
 _Note: you should be running Terraform 0.13.x_
 
 #### Terraform Commands
-
+<!-- Minor suggestion: convert to a table -->
 * `terraform init` - This initializes terraform (duh) which means it pulls in the provider information, downloads any modules that are referenced in the code and configures the terraform statefile 
 
 * `terraform plan` - This is a dry-run feature of terraform to see what would happen if you executed the provisioning based on what's in the code and in your terraform statefile 
@@ -232,12 +238,12 @@ Plan: 1 to add, 0 to change, 0 to destroy.
 Changes to Outputs:
   + droplet_public_ip = (known after apply)
 ```
-  - You can how see what terraform will be provisoining
+  - You can how see what terraform will be provisioning <!-- or provisioned (?) -->
   - The `Plan` line is key for deciding if terraform is going to perform the changes you're expecting.
   - It's always a good idea to review the plan prior to executing the change
 
 * After reviewing the plan's output, run `terraform apply`
-  - You will see a similar output to the plan and will prompted to confirm the change:
+  - You will see a similar output to the plan and will be prompted to confirm the change:
 
 ```hcl
 Plan: 1 to add, 0 to change, 0 to destroy.
@@ -273,7 +279,7 @@ droplet_public_ip = 1.2.3.4
 
 * After the `apply` has completed, you can take the `droplet_public_ip` and browse to it (eg. http://1.2.3.4)
 * Even though the terraform process has completed, DigitalOcean is still provisioning the droplet with the help of the `user_data_nginx.yaml` we specified in the resource definition
-* After a minute of furiously refreshing the page, you should see the default nginx page. After another ~30 seconds, refresh the page. The user data script should have completed and you should now see _"web-burrito-prod IS ALIVE!!!"_
+* After a minute of furiously refreshing the page, you should see the default Nginx page. After another ~30 seconds, refresh the page. The user data script should have completed and you should now see _"web-burrito-prod IS ALIVE!!!"_
 
 * Now you can ssh into the new droplet with `ssh -i ~/.ssh/do_ed25519 root@1.2.3.4` (replace 1.2.3.4 with your `droplet_public_ip`)
   - You will be prompted to continue connecting, type `yes` then press enter
@@ -361,13 +367,13 @@ After the `terraform destroy` has finished, don't forget to commit your changes 
 
 ### In Review
 
-* You set up your DigitalOcean account
+* Set up your DigitalOcean account
 * Configured a droplet SSH key
 * Learned about `.tf` files
 * Created your first resource definition 
 * Installed Terraform
 * Learned about Terraform init/plan/apply
-* Provisioned via the terraform command
+* Provisioned via the Terraform command
 * SSH'd into the newly provisioned droplet
 * Destroyed the droplet
   
